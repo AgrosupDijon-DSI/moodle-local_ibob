@@ -1,4 +1,5 @@
 # Inscription by open badges #
+# Local plugin #
 
 Ibob and Ibobenrol add a new enrolment method in courses, subject to the possession of a particular open badges.
 
