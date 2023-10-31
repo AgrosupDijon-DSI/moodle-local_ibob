@@ -32,7 +32,7 @@ class ibob_badges extends \core\persistent {
     public static function define_properties() {
         return [
             'name' => [
-                'type' => PARAM_TEXT,
+                'type' => PARAM_RAW,
             ],
             'description' => [
                 'type' => PARAM_RAW,
