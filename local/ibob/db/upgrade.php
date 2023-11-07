@@ -37,6 +37,11 @@ function xmldb_local_ibob_upgrade($oldversion) {
         $table = new xmldb_table('local_ibob_user_notification');
         $field = new xmldb_field('email_send', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'notification_viewed');
 
+        // Conditionally launch add table local_ibob_user_notification.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table, $continue = true, $feedback = true);
+        }
+        
         // Conditionally launch add field email_send.
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
