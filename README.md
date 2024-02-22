@@ -14,7 +14,7 @@ The second plugin (local_ibob) manages notifications and emails sent to users, a
 
 ## License ##
 
-2020 Frédéric Grebot <frederic.grebot@agrosupdijon.fr>
+2024 Frédéric Grebot <frederic.grebot@agrosupdijon.fr>
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
