@@ -71,3 +71,7 @@ $string['messconfirmchangeemailhtml'] = '<h1>Hello</h1><p>You initiated a email 
          for your Open Badge Passport account.</p>If it was you, you have to click the link {$a->link} and type the following confirmation code :
          {$a->code}</strong></p>
          <p>This code will be valid until {$a->date} at {$a->time}</p><p>Thanks for using {$a->wwwroot} and happy learning !</p>';
+$string['userconfig:errorgeneral'] = 'Error while updating provider : ';
+$string['userconfig:error1'] = 'case 1<br>';
+$string['userconfig:error2'] = 'case 2<br>';
+$string['userconfig:error2'] = 'case 3<br>';

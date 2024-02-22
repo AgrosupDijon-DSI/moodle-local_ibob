@@ -27,7 +27,7 @@ require_once(__DIR__ . '/../../config.php');
 
 require_login();
 
-global $USER, $DB;
+global $USER, $DB, $OUTPUT, $PAGE;
 $content = '';
 $action  = '';
 $returnurl = optional_param('returnurl', '/local/ibob/userconfig.php', PARAM_LOCALURL);
@@ -58,7 +58,7 @@ if ($mform->is_cancelled()) {
                     if ($fromform->providerapikey !== '') {
                         // Case 1 : email has changed, record the new email in database and initiate verification sequence.
                         if (!update_confirmation_sequence_init($USER->id, $infoapiuser->id, $fromform->providerapikey)) {
-                            echo "Problème pendant l'update du provider, case 1<br>";exit;
+                            echo get_string('userconfig:errorgeneral', 'local_ibob').get_string('userconfig:error1', 'local_ibob');exit;
                         }
                     } else {
                         delete_enrolments_user($USER->id);
@@ -69,14 +69,14 @@ if ($mform->is_cancelled()) {
             } else {
                 // Case 2 : no old email, record the new email in database and initiate verification sequence.
                 if (!update_confirmation_sequence_init($USER->id, $infoapiuser->id, $fromform->providerapikey)) {
-                    echo "Problème pendant l'update du provider, case 2<br>";exit;
+                    echo get_string('userconfig:errorgeneral', 'local_ibob').get_string('userconfig:error2', 'local_ibob');exit;
                 }
             }
         } else {
             // Case 3 : waiting for the confirmation code.
             if ($fromform->providerapikey !== '') { // Email wanted typed, re-doing the verfication sequence.
                 if (!update_confirmation_sequence_init($USER->id, $infoapiuser->id, $fromform->providerapikey)) {
-                    echo "Problème pendant l'update du provider, case 3<br>";exit;
+                    echo get_string('userconfig:errorgeneral', 'local_ibob').get_string('userconfig:error3', 'local_ibob');exit;
                 }
             } else {
                 // Email typed is empty, erasing provider and issued badges.
