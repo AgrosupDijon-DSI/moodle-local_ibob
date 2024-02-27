@@ -24,6 +24,8 @@
 
 require_once(__DIR__ . '/../../config.php');
 
+require_login();
+
 global $DB, $PAGE, $USER, $OUTPUT;
 $content = '';
 $action = '';

@@ -27,7 +27,6 @@ namespace local_ibob\task;
 use coding_exception;
 use export_service;
 
-defined('MOODLE_INTERNAL') || die();
 /**
  * Plugin local_ibob.
  *
