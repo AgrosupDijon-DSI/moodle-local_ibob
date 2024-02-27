@@ -20,23 +20,21 @@ define([
                         methodname: 'local_ibob_detail_badge_function',
                         args: {badgeid: elem.data("id")},}
                     ]);
-                promises[0].done(function (response) {
+                promises[0].done(function(response) {
                     returnfunc(response);
-                }).fail(function(ex){
-                    alert('error : '+ex);
+                }).fail(function(ex) {
+                    alert('error : ' + ex);
                 });
-
                 function returnfunc(returnjson){
-                    alert(returnjson);
                     let modalTitle = 'Détail du badge';
                     let trigger = $('#badge_'+returnjson.id);
-                    let modal = ModalFactory.create({
+                    ModalFactory.create({
                         title: modalTitle,
                         body: templates.render('local_ibob/userbadgedisplayer', returnjson),
                     }, trigger)
                          .done(function(modal) {
-                             if(modal.countOtherVisibleModals() == 0){
-                                 modal.getRoot().on(ModalEvents.hidden, function () {
+                             if (modal.countOtherVisibleModals() == 0) {
+                                 modal.getRoot().on(ModalEvents.hidden, function() {
                                         modal.destroy();
                                      }
                                  );
