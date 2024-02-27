@@ -22,12 +22,15 @@ define([
                     ]);
                 promises[0].done(function(response) {
                     returnfunc(response);
-                }).fail(function(ex) {
-                    alert('error : ' + ex);
                 });
-                function returnfunc(returnjson){
+                /**
+                 * Return function.
+                 * @param {string} returnjson JSON returned.
+                 * @returns {string} The sum of the two numbers.
+                 */
+                function returnfunc(returnjson) {
                     let modalTitle = 'Détail du badge';
-                    let trigger = $('#badge_'+returnjson.id);
+                    let trigger = $('#badge_' + returnjson.id);
                     ModalFactory.create({
                         title: modalTitle,
                         body: templates.render('local_ibob/userbadgedisplayer', returnjson),
