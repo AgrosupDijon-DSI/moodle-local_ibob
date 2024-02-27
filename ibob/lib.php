@@ -124,25 +124,25 @@ function local_ibob_myprofile_navigation(\core_user\output\myprofile\tree $tree)
             $url = $ouserprovider->apiurl;
             $oapikey = json_decode($ouserprovider->key_field);
             $email = $oapikey->email;
-            $acurl = get_user_provider_json($url, $email);
+            $curlresult = get_user_provider_json($url, $email);
 
-            if (is_null($acurl['json']) && $acurl['code'] != 200) {
+            if (is_null($curlresult['json']) && $curlresult['code'] != 200) {
                 throw new Exception(get_string('testbackpackapiurlexception', 'local_ibob',
-                        (object)['url' => $acurl['fullurl'], 'errorcode' => $acurl['code']])
-                    , $acurl['code']);
+                        (object)['url' => $curlresult['fullurl'], 'errorcode' => $curlresult['code']])
+                    , $curlresult['code']);
             } else {
-                if ($acurl['code'] === 200) {
-                    if (!is_array($acurl['json']->userId)) {
-                        $ajson = [$acurl['json']->userId];
+                if ($curlresult['code'] === 200) {
+                    if (!is_array($curlresult['json']->userId)) {
+                        $ajson = [$curlresult['json']->userId];
                     } else {
-                        $ajson = $acurl['json']->userId;
+                        $ajson = $curlresult['json']->userId;
                     }
                     // Global Public/social Open Badges List (public group : 0 and social group : 1).
                     $agroupid = [0];
                     foreach ($ajson as $backpackitem) {
                         foreach ($agroupid as $groupid) {
                             $fullurl = $url . $backpackitem . '/group/' . $groupid . '.json';
-                            $output = $acurl['curl']->get($fullurl);
+                            $output = $curlresult['curl']->get($fullurl);
                             $alistbadgesuser = json_decode($output, true);
                             // Badge suppression if expiration date > now.
                             if (count($alistbadgesuser) > 2) {
