@@ -31,7 +31,7 @@ $functions = [
         'description' => 'Print badge detail',
         'type' => 'read',
         'ajax' => true,
-        'loginrequired' => true,
+        'loginrequired' => false,
         'capabilities' => '',
     ],
 ];
