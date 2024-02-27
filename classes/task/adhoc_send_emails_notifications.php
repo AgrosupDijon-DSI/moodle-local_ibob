@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_ibob\task;
-
+defined('MOODLE_INTERNAL') || die();
 use core\task\adhoc_task;
 
 /**

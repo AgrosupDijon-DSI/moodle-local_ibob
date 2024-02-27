@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
  * Plugin local_ibob.
  *
@@ -28,6 +27,7 @@ namespace local_ibob\task;
 use coding_exception;
 use export_service;
 
+defined('MOODLE_INTERNAL') || die();
 /**
  * Plugin local_ibob.
  *
