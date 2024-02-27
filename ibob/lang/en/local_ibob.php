@@ -75,3 +75,14 @@ $string['userconfig:errorgeneral'] = 'Error while updating provider : ';
 $string['userconfig:error1'] = 'case 1<br>';
 $string['userconfig:error2'] = 'case 2<br>';
 $string['userconfig:error2'] = 'case 3<br>';
+$string['emails_notifications:subject'] = 'Course "{$a}" has been modified';
+$string['emails_notifications:fullmess1'] = 'Hello\n\n';
+$string['emails_notifications:fullmess2'] = 'Course "{$a}" has been modified and you don\'t have anymore the required Open Badges to be enrolled.\n\n';
+$string['emails_notifications:fullmess3'] = 'No action required, you are automatically disenrolled from this course.\n\n';
+$string['emails_notifications:fullmess4'] = 'Thank you for using {$a} and good learning !';
+$string['emails_notifications:fullmesshtml1'] = '<p>Hello</p>';
+$string['emails_notifications:fullmesshtml2'] = '<p>Course "{$a}" has been modified and you don\'t have anymore the required Open Badges to be enrolled.</p>';
+$string['emails_notifications:fullmesshtml3'] = '<p>No action required, you are automatically disenrolled from this course.</p>';
+$string['emails_notifications:fullmesshtml4'] = '<p>Thank you for using {$a} and good learning !</p>';
+$string['emails_notifications:click'] = 'Click here';
+

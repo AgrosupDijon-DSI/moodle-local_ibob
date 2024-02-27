@@ -34,7 +34,7 @@ $returnurl = optional_param('returnurl', '/local/ibob/userconfig.php', PARAM_LOC
 $cancelurl = optional_param('returnurl', '/user/preferences.php', PARAM_LOCALURL);
 
 $context = context_user::instance($USER->id);
-$url = new moodle_url('/local/ibob/userconfig.php', ['action' => $action]);
+$url = new moodle_url('/local/ibob/userconfig.php', ['action' => $action, 'sesskey' => sesskey()]);
 
 $PAGE->set_context($context);
 $PAGE->set_url($url);

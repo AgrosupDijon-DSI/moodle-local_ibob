@@ -24,7 +24,7 @@
 
 require_once(__DIR__ . '/../../config.php');
 
-global $DB, $PAGE, $USER;
+global $DB, $PAGE, $USER, $OUTPUT;
 $content = '';
 $action = '';
 if (isloggedin()) {
@@ -34,8 +34,8 @@ if (isloggedin()) {
 }
 
 $context = context_system::instance();
-$url = new moodle_url('/local/ibob/emailconfirmation.php', ['action' => $action]);
-$urlnewcode = new moodle_url('/local/ibob/userconfig.php', ['action' => $action]);
+$url = new moodle_url('/local/ibob/emailconfirmation.php', ['action' => $action, 'sesskey' => sesskey()]);
+$urlnewcode = new moodle_url('/local/ibob/userconfig.php', ['action' => $action, 'sesskey' => sesskey()]);
 
 $PAGE->set_context($context);
 $PAGE->set_url($url);
