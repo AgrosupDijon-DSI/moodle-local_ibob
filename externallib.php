@@ -43,7 +43,7 @@ class local_ibob_external extends external_api {
     public static function get_badge(int $badgeid) {
         global $DB;
 
-        $sql = "SELECT *,DATE_FORMAT(FROM_UNIXTIME(expirationdate),'%m/%d/%Y') as expirationformateddate
+        $sql = "SELECT *,expirationdate as expirationformateddate
                   FROM {local_ibob_badges}
              LEFT JOIN {local_ibob_badge_issued}
                     ON {local_ibob_badges}.id = {local_ibob_badge_issued}.badgeid
