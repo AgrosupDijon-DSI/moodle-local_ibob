@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_ibob\task;
-defined('MOODLE_INTERNAL') || die();
+
 use core\task\adhoc_task;
 
 /**
@@ -86,34 +86,14 @@ class adhoc_send_emails_notifications  extends \core\task\adhoc_task {
                         $plugin->unenrol_user($instance, $userid);
                     }
                     // Message for a course disenrollment.
-                    //$message->subject = 'Modification du cours "'.$course->fullname.'"';
                     $message->subject .= get_string('emails_notifications:subject', 'local_ibob', $course->fullname);
-
-                    //$message->fullmessage = "Bonjour\n\n";
                     $message->fullmessage .= get_string('emails_notifications:fullmess1', 'local_ibob');
-
-                    //$message->fullmessage .= "Le cours \"".$course->fullname."\" a été modifié et vous n'avez plus les Open Badges
-                    // nécessaires pour vous y inscrire.\n\n";
                     $message->fullmessage .= get_string('emails_notifications:fullmess2', 'local_ibob', $course->fullname);
-
-                    //$message->fullmessage .= "Aucune action n'est nécéssaire de votre part, vous êtes automatiquement désinscrit
-                    // de ce cours.\n\n";
                     $message->fullmessage .= get_string('emails_notifications:fullmess3', 'local_ibob');
-
-                    //$message->fullmessage .= "Merci d'utiliser ".$CFG->wwwroot." et bon apprentissage !";
                     $message->fullmessage .= get_string('emails_notifications:fullmess4', 'local_ibob', $CFG->wwwroot);
-
                     $message->fullmessagehtml .= get_string('emails_notifications:fullmesshtml1', 'local_ibob');
-
-                    //$message->fullmessagehtml .= "<p>Le cours \"".$course->fullname."\" a été modifié et vous n'avez plus les Open
-                    // Badges nécessaires pour vous y inscrire.</p>";
                     $message->fullmessagehtml .= get_string('emails_notifications:fullmesshtml2', 'local_ibob', $course->fullname);
-
-                    //$message->fullmessagehtml .= "<p>Aucune action n'est nécéssaire de votre part, vous êtes automatiquement
-                    // désinscrit de ce cours.</p>";
                     $message->fullmessagehtml .= get_string('emails_notifications:fullmesshtml3', 'local_ibob');
-
-                    //$message->fullmessagehtml .= "<p>Merci d'utiliser ".$CFG->wwwroot." et bon apprentissage !</p>";
                     $message->fullmessagehtml .= get_string('emails_notifications:fullmesshtml4', 'local_ibob', $CFG->wwwroot);
                     $message->userto = \core_user::get_user($userid);
                     message_send($message);

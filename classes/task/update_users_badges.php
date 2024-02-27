@@ -329,7 +329,7 @@ class update_users_badges extends \core\task\scheduled_task {
      * @param int $couseid
      * @return object
      */
-    protected function get_enrolid_by_course (int $couseid) {
+    protected function get_enrolid_by_course(int $couseid) {
         global $DB;
         $sql = "SELECT e.id
                   FROM {enrol} e
@@ -345,7 +345,7 @@ class update_users_badges extends \core\task\scheduled_task {
      * @param int $enrolid
      * @return mixed
      */
-    protected function is_user_enrolled (int $userid, int $enrolid) {
+    protected function is_user_enrolled(int $userid, int $enrolid) {
         global $DB;
         $sql = "SELECT u.id
                   FROM {user_enrolments} ue
@@ -363,7 +363,7 @@ class update_users_badges extends \core\task\scheduled_task {
      * @param int $userid
      * @return mixed
      */
-    protected function delete_expired_badge_issued (int $badgeid, int $userid) {
+    protected function delete_expired_badge_issued(int $badgeid, int $userid) {
         global $DB;
         return $DB->delete_records('local_ibob_badge_issued', ['badgeid' => $badgeid, 'userid' => $userid]);
     }
@@ -375,7 +375,7 @@ class update_users_badges extends \core\task\scheduled_task {
      * @param int $badgeid
      * @return object
      */
-    protected function is_badge_issued (int $userid, int $badgeid) {
+    protected function is_badge_issued(int $userid, int $badgeid) {
         global $DB;
         return $DB->get_record('local_ibob_badge_issued', ["userid" => $userid, "badgeid" => $badgeid], $fields = 'id',
             $strictness = IGNORE_MISSING);
@@ -387,7 +387,7 @@ class update_users_badges extends \core\task\scheduled_task {
      * @param int $userid
      * @return array
      */
-    protected function get_local_badges_from_user (int $userid) {
+    protected function get_local_badges_from_user(int $userid) {
         global $DB;
         $sql = "SELECT BI.id,BI.badgeid,B.name,BI.expirationdate
                   FROM {local_ibob_badge_issued} BI
@@ -402,7 +402,7 @@ class update_users_badges extends \core\task\scheduled_task {
      *
      * @return array
      */
-    protected function get_users_obp (): array {
+    protected function get_users_obp(): array {
         global $DB;
         $sql = "SELECT user_id,key_field
                   FROM {local_ibob_user_apikey}
@@ -416,7 +416,7 @@ class update_users_badges extends \core\task\scheduled_task {
      * @param int $providerid
      * @return array
      */
-    protected function get_providers_info (int $providerid): array {
+    protected function get_providers_info(int $providerid): array {
         global $DB;
         $sql = "SELECT id,apiurl
                   FROM {local_ibob_providers}
@@ -431,7 +431,7 @@ class update_users_badges extends \core\task\scheduled_task {
      * @param string $issuername
      * @return object
      */
-    protected function is_stored_in_local (string $badgename, string $issuername) {
+    protected function is_stored_in_local(string $badgename, string $issuername) {
         global $DB;
         return $DB->get_record('local_ibob_badges', ["name" => $badgename, 'issuername' => $issuername], $fields = 'id',
              $strictness = IGNORE_MISSING);
@@ -443,7 +443,7 @@ class update_users_badges extends \core\task\scheduled_task {
      * @param int $badgeid
      * @return array
      */
-    protected function get_all_courses_from_enrolment_badge (int $badgeid): array {
+    protected function get_all_courses_from_enrolment_badge(int $badgeid): array {
         global $DB;
         $likecustom1 = $DB->sql_like('E.customtext1', ':badgeid1');
         $likecustom2 = $DB->sql_like('E.customtext1', ':badgeid2');
@@ -470,7 +470,7 @@ class update_users_badges extends \core\task\scheduled_task {
      * @param int $userid
      * @return array
      */
-    protected function get_courses_from_enrolment_badge (int $badgeid, int $userid): array {
+    protected function get_courses_from_enrolment_badge(int $badgeid, int $userid): array {
         global $DB;
 
         $likecustom1 = $DB->sql_like('E.customtext1', ':badgeid1');
@@ -496,7 +496,7 @@ class update_users_badges extends \core\task\scheduled_task {
      *
      * @return array
      */
-    protected function get_users_with_provider (): array {
+    protected function get_users_with_provider(): array {
         global $DB;
         $providerid = 1;
         $sql = "SELECT {local_ibob_user_apikey}.id,{local_ibob_user_apikey}.key_field,{local_ibob_user_apikey}.user_id,

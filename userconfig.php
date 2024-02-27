@@ -58,7 +58,8 @@ if ($mform->is_cancelled()) {
                     if ($fromform->providerapikey !== '') {
                         // Case 1 : email has changed, record the new email in database and initiate verification sequence.
                         if (!update_confirmation_sequence_init($USER->id, $infoapiuser->id, $fromform->providerapikey)) {
-                            echo get_string('userconfig:errorgeneral', 'local_ibob').get_string('userconfig:error1', 'local_ibob');exit;
+                            echo get_string('userconfig:errorgeneral', 'local_ibob').get_string('userconfig:error1', 'local_ibob');
+                            exit;
                         }
                     } else {
                         delete_enrolments_user($USER->id);
