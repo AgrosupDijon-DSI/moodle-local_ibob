@@ -51,10 +51,10 @@ class userconfig extends \moodleform {
         $mform->addElement('text', 'providerapikey', get_string('email'), ['size' => '35']);
         $mform->setType('providerapikey', PARAM_EMAIL);
         $mform->addRule('providerapikey', get_string('invalidemail', 'local_ibob'), 'email', null, 'client');
-        if (self::printvalidationtext()) {
+        if (self::local_ibob_printvalidationtext()) {
             $mform->addElement('html', '<div><p>'.get_string('emailvalidated', 'local_ibob').
-                ' : <strong>'.get_string(self::gettextvalidatedemail(), 'local_ibob').'</strong> </p></div>');
-            self::generatevalidationlink($mform);
+                ' : <strong>'.get_string(self::local_ibob_gettextvalidatedemail(), 'local_ibob').'</strong> </p></div>');
+            self::local_ibob_generatevalidationlink($mform);
         }
         $this->add_action_buttons();
         $mform->addElement('hidden', 'hasprovider', null);
@@ -77,7 +77,7 @@ class userconfig extends \moodleform {
      *
      * @return string
      */
-    public function gettextvalidatedemail(): string {
+    public function local_ibob_gettextvalidatedemail(): string {
         global $DB, $USER;
         $confirmationneeded = $DB->get_record_select(
             'local_ibob_user_apikey',
@@ -99,7 +99,7 @@ class userconfig extends \moodleform {
      *
      * @param object $mform
      */
-    public function generatevalidationlink($mform) {
+    public function local_ibob_generatevalidationlink($mform) {
         global $DB, $USER, $CFG;
         $confirmationneeded = $DB->get_record_select(
             'local_ibob_user_apikey',
@@ -120,7 +120,7 @@ class userconfig extends \moodleform {
     /**
      * Has provider ?
      */
-    public function printvalidationtext() {
+    public function local_ibob_printvalidationtext() {
         global $DB, $USER;
         $hasprovider = $DB->get_record_select(
             'local_ibob_user_apikey',

@@ -47,20 +47,20 @@ class service_detail_badge extends external_api {
         // FUNCTIONNAME_parameters() always return an external_function_parameters().
         // The external_function_parameters constructor expects an array of external_description.
         return new external_function_parameters(
-            ['PARAM1' => new external_value(PARAM_TYPE, 'human description of PARAM1')]
+            ['badgeid' => new external_value(PARAM_INT, 'the badge id')]
         );
     }
 
     /**
      * The function itself
-     * @param string $param1
+     * @param int $badgeid
      * @return string
      */
-    public static function ibob_detail_badge_webservice(string $param1): void {
+    public static function ibob_detail_badge_webservice(int $badgeid): void {
 
         // Parameters validation.
         $params = self::validate_parameters(self::ibob_detail_badge_webservice_parameters(),
-            ['PARAM1' => $param1]);
+            ['badgeid' => $badgeid]);
     }
 
     /**
@@ -68,6 +68,6 @@ class service_detail_badge extends external_api {
      * @return external_description
      */
     public static function ibob_detail_badge_webservice_returns() {
-        return new external_value(PARAM_TYPE, 'human description of the returned value');
+        return new external_value(PARAM_RAW, 'the badge description');
     }
 }

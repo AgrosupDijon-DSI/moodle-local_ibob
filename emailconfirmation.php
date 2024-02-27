@@ -52,7 +52,7 @@ if ($mform->is_cancelled()) {
     redirect(new moodle_url($returnurl));
 } else if ($fromform = $mform->get_data()) {
     // In this case you process validated data. $mform->get_data() returns data posted in form.
-    $infoapiuser = get_info_user($fromform->emailconfirmationcode);
+    $infoapiuser = local_ibob_get_info_user($fromform->emailconfirmationcode);
     $returnedhtml = html_writer::start_div();
     if ($infoapiuser) {
         if (time() > $infoapiuser->confirmation_expiration_date) { // Valid code but expiration date reached.
@@ -61,8 +61,8 @@ if ($mform->is_cancelled()) {
             $returnlink = html_writer::link(new moodle_url($urlnewcode), get_string('emailconfirmationlinknewcode', 'local_ibob'));
             $returnedhtml .= html_writer::tag('p', $returnlink);
         } else { // Code is valid.
-            update_api_key_user($infoapiuser);
-            delete_badges_user($infoapiuser->user_id);
+            local_ibob_update_api_key_user($infoapiuser);
+            local_ibob_delete_badges_user($infoapiuser->user_id);
             redirect(new moodle_url($returnurl));
         }
     } else {  // Code is invalid.
@@ -93,7 +93,7 @@ echo $content;
  * @param int $userid
  * @return void
  */
-function delete_badges_user(int $userid) {
+function local_ibob_delete_badges_user(int $userid) {
     global $DB;
     $DB->delete_records('local_ibob_badge_issued', ['userid' => $userid]);
 }
@@ -104,7 +104,7 @@ function delete_badges_user(int $userid) {
  * @param object $infoapiuser
  * @return mixed
  */
-function update_api_key_user($infoapiuser) {
+function local_ibob_update_api_key_user($infoapiuser) {
     global $DB;
     $ouserapikey = new stdClass();
     $ouserapikey->id = $infoapiuser->id;
@@ -124,7 +124,7 @@ function update_api_key_user($infoapiuser) {
  * @param int $code
  * @return mixed
  */
-function get_info_user(int $code) {
+function local_ibob_get_info_user(int $code) {
     global $DB;
     $sql = "SELECT *
               FROM {local_ibob_user_apikey}
@@ -137,6 +137,6 @@ function get_info_user(int $code) {
  *
  * @return int
  */
-function generate_confirmation_code() {
+function local_ibob_generate_confirmation_code() {
     return mt_rand(1000, 9999);
 }

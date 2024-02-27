@@ -48,7 +48,7 @@ if ($mform->is_cancelled()) {
 } else if ($fromform = $mform->get_data()) {
     // In this case you process validated data. $mform->get_data() returns data posted in form.
     if ($DB->record_exists('local_ibob_user_apikey', ['user_id' => $USER->id])) {
-        $infoapiuser = get_info_user($USER->id);
+        $infoapiuser = local_ibob_get_info_user($USER->id);
         // Is the confirmation sequence initiated ?
         if ($infoapiuser->confirmation_needed === 0) {
             // Case 1 : verification : has the email changed ?
@@ -57,42 +57,42 @@ if ($mform->is_cancelled()) {
                 if ($jsondecoded->email !== $fromform->providerapikey) {
                     if ($fromform->providerapikey !== '') {
                         // Case 1 : email has changed, record the new email in database and initiate verification sequence.
-                        if (!update_confirmation_sequence_init($USER->id, $infoapiuser->id, $fromform->providerapikey)) {
+                        if (!local_ibob_update_confirmation_sequence_init($USER->id, $infoapiuser->id, $fromform->providerapikey)) {
                             echo get_string('userconfig:errorgeneral', 'local_ibob').get_string('userconfig:error1', 'local_ibob');
                             exit;
                         }
                     } else {
-                        delete_enrolments_user($USER->id);
-                        delete_badges_user($USER->id);
-                        delete_api_key_user($infoapiuser->id);
+                        local_ibob_delete_enrolments_user($USER->id);
+                        local_ibob_delete_badges_user($USER->id);
+                        local_ibob_delete_api_key_user($infoapiuser->id);
                     }
                 }
             } else {
                 // Case 2 : no old email, record the new email in database and initiate verification sequence.
-                if (!update_confirmation_sequence_init($USER->id, $infoapiuser->id, $fromform->providerapikey)) {
+                if (!local_ibob_update_confirmation_sequence_init($USER->id, $infoapiuser->id, $fromform->providerapikey)) {
                     echo get_string('userconfig:errorgeneral', 'local_ibob').get_string('userconfig:error2', 'local_ibob');exit;
                 }
             }
         } else {
             // Case 3 : waiting for the confirmation code.
             if ($fromform->providerapikey !== '') { // Email wanted typed, re-doing the verfication sequence.
-                if (!update_confirmation_sequence_init($USER->id, $infoapiuser->id, $fromform->providerapikey)) {
+                if (!local_ibob_update_confirmation_sequence_init($USER->id, $infoapiuser->id, $fromform->providerapikey)) {
                     echo get_string('userconfig:errorgeneral', 'local_ibob').get_string('userconfig:error3', 'local_ibob');exit;
                 }
             } else {
                 // Email typed is empty, erasing provider and issued badges.
-                delete_enrolments_user($USER->id);
-                delete_badges_user($USER->id);
-                delete_api_key_user($infoapiuser->id);
+                local_ibob_delete_enrolments_user($USER->id);
+                local_ibob_delete_badges_user($USER->id);
+                local_ibob_delete_api_key_user($infoapiuser->id);
             }
         }
     } else {
         // Case 4 : no provider yet for the user.
         if ($fromform->providerapikey !== '') {
             // Case 4 ; create provider for the user.
-            if ($apikeyid = insert_api_key_user($USER->id, $fromform->providerapikey)) {
+            if ($apikeyid = local_ibob_insert_api_key_user($USER->id, $fromform->providerapikey)) {
                 // Case 4 : initiate verification sequence.
-                update_confirmation_sequence_init($USER->id, $apikeyid, $fromform->providerapikey);
+                local_ibob_update_confirmation_sequence_init($USER->id, $apikeyid, $fromform->providerapikey);
             }
         }
     }
@@ -101,7 +101,7 @@ if ($mform->is_cancelled()) {
 
 // Set default data.
 $toform = [];
-if ($ojsonapikey = get_info_user($USER->id)) { // User has a provider.
+if ($ojsonapikey = local_ibob_get_info_user($USER->id)) { // User has a provider.
     if ($ojsonapikey->key_field !== '') {
         $jsondecoded = json_decode($ojsonapikey->key_field);
         if ($ojsonapikey->confirmation_needed == 1) { // Waiting for confirmation.
@@ -126,7 +126,7 @@ echo $content;
  * @param int $userid
  * @return void
  */
-function delete_enrolments_user(int $userid) {
+function local_ibob_delete_enrolments_user(int $userid) {
     global $DB;
     $sql = "
         SELECT E.courseid
@@ -151,7 +151,7 @@ function delete_enrolments_user(int $userid) {
  * @param int $apiuserkey
  * @return void
  */
-function delete_api_key_user(int $apiuserkey) {
+function local_ibob_delete_api_key_user(int $apiuserkey) {
     global $DB;
     $DB->delete_records('local_ibob_user_apikey', ['id' => $apiuserkey]);
 }
@@ -161,7 +161,7 @@ function delete_api_key_user(int $apiuserkey) {
  * @param int $userid
  * @return void
  */
-function delete_badges_user(int $userid) {
+function local_ibob_delete_badges_user(int $userid) {
     global $DB;
     $DB->delete_records('local_ibob_badge_issued', ['userid' => $userid]);
 }
@@ -172,7 +172,7 @@ function delete_badges_user(int $userid) {
  * @param string $email
  * @return mixed
  */
-function insert_api_key_user(int $userid, string $email) {
+function local_ibob_insert_api_key_user(int $userid, string $email) {
     global $DB;
     $ouserapikey = new stdClass();
     // For now, provider = 1 because we only deal with OBP.
@@ -191,7 +191,7 @@ function insert_api_key_user(int $userid, string $email) {
  * @param object $formdata
  * @return mixed
  */
-function update_api_key_user(int $userid, $formdata) {
+function local_ibob_update_api_key_user(int $userid, $formdata) {
     global $DB;
     $ouserapikey = new stdClass();
     $ouserapikey->id = $userid;
@@ -207,7 +207,7 @@ function update_api_key_user(int $userid, $formdata) {
  * @param object $ouserapikey
  * @return void
  */
-function send_email_confirmation(int $userid, string $newemail, $ouserapikey) {
+function local_ibob_send_email_confirmation(int $userid, string $newemail, $ouserapikey) {
     global $CFG;
     $adateexpiration = getdate($ouserapikey->confirmation_expiration_date);
     $message = new \core\message\message();
@@ -245,17 +245,17 @@ function send_email_confirmation(int $userid, string $newemail, $ouserapikey) {
  * @param string $newemail
  * @return mixed
  */
-function update_confirmation_sequence_init(int $userid, int $apikeyid, string $newemail) {
+function local_ibob_update_confirmation_sequence_init(int $userid, int $apikeyid, string $newemail) {
     global $DB;
     $ouserapikey = new stdClass();
     $ouserapikey->id = $apikeyid;
     $ouserapikey->confirmation_needed = true;
     $expirationdate = time() + 86400;
-    $ouserapikey->confirmation_code = generate_confirmation_code();
+    $ouserapikey->confirmation_code = local_ibob_generate_confirmation_code();
     $ouserapikey->confirmation_expiration_date = $expirationdate;
     $ouserapikey->confirmation_email_wanted  = $newemail;
 
-    send_email_confirmation($userid, $newemail, $ouserapikey);
+    local_ibob_send_email_confirmation($userid, $newemail, $ouserapikey);
     $apikeyuser = $DB->update_record('local_ibob_user_apikey', $ouserapikey);
     return $apikeyuser;
 }
@@ -265,7 +265,7 @@ function update_confirmation_sequence_init(int $userid, int $apikeyid, string $n
  * @param int $userid
  * @return mixed
  */
-function get_info_user(int $userid) {
+function local_ibob_get_info_user(int $userid) {
     global $DB;
     return $DB->get_record_select('local_ibob_user_apikey', 'user_id = :user_id', ['user_id' => $userid], '*', IGNORE_MISSING);
 }
@@ -274,6 +274,6 @@ function get_info_user(int $userid) {
  * Generate confirmation code.
  * @return int
  */
-function generate_confirmation_code() {
+function local_ibob_generate_confirmation_code() {
     return mt_rand(1000, 9999);
 }
