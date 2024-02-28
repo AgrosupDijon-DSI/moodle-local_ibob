@@ -48,7 +48,9 @@ class local_ibob_external extends external_api {
              LEFT JOIN {local_ibob_badge_issued}
                     ON {local_ibob_badges}.id = {local_ibob_badge_issued}.badgeid
                  WHERE {local_ibob_badges}.id = :id";
-        return $DB->get_record_sql($sql, ["id" => $badgeid]);
+        $mybadge = $DB->get_record_sql($sql, ["id" => $badgeid]);
+        $mybadge->image = mb_substr($mybadge->image, 7);
+        return $mybadge;
     }
 
     /**
