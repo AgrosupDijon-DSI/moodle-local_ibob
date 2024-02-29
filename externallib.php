@@ -71,21 +71,6 @@ class local_ibob_external extends external_api {
      */
     public static function detail_badge_function_returns() {
         return new external_value(PARAM_RAW, 'Json returned');
-        //return new external_multiple_structure(
-        //    return new external_single_structure(
-        //    [
-        //        'id' => new external_value(PARAM_RAW, 'badge id'),
-        //        'name' => new external_value(PARAM_RAW, 'badge name'),
-        //        'description' => new external_value(PARAM_RAW, 'badge description'),
-        //        'issuername' => new external_value(PARAM_RAW, 'badge issuer name'),
-        //        'issuerurl' => new external_value(PARAM_RAW, 'badge issuer url'),
-        //        'issuercontact' => new external_value(PARAM_RAW, 'badge issuer contact'),
-        //        'group' => new external_value(PARAM_RAW, 'badge group'),
-        //        'image' => new external_value(PARAM_RAW, 'badge image url'),
-        //        'expirationformateddate' => new external_value(PARAM_RAW, 'badge expiration date'),
-        //    ]
-        //)
-        //);
     }
 
     /**
