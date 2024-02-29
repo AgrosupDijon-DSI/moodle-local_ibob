@@ -23,6 +23,7 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
+require_once('lib.php');
 
 require_login();
 
@@ -52,7 +53,7 @@ if ($mform->is_cancelled()) {
     redirect(new moodle_url($returnurl));
 } else if ($fromform = $mform->get_data()) {
     // In this case you process validated data. $mform->get_data() returns data posted in form.
-    $infoapiuser = local_ibob_get_info_user($fromform->emailconfirmationcode);
+    $infoapiuser = get_info_user($fromform->emailconfirmationcode);
     $returnedhtml = html_writer::start_div();
     if ($infoapiuser) {
         if (time() > $infoapiuser->confirmation_expiration_date) { // Valid code but expiration date reached.
@@ -61,8 +62,8 @@ if ($mform->is_cancelled()) {
             $returnlink = html_writer::link(new moodle_url($urlnewcode), get_string('emailconfirmationlinknewcode', 'local_ibob'));
             $returnedhtml .= html_writer::tag('p', $returnlink);
         } else { // Code is valid.
-            local_ibob_update_api_key_user($infoapiuser);
-            local_ibob_delete_badges_user($infoapiuser->user_id);
+            update_api_key_user($infoapiuser);
+            delete_badges_user($infoapiuser->user_id);
             redirect(new moodle_url($returnurl));
         }
     } else {  // Code is invalid.
@@ -86,57 +87,57 @@ echo $OUTPUT->header();
 $content .= $mform->render();
 $content .= $OUTPUT->footer();
 echo $content;
-
-/**
- * Delete user badge.
- *
- * @param int $userid
- * @return void
- */
-function local_ibob_delete_badges_user(int $userid) {
-    global $DB;
-    $DB->delete_records('local_ibob_badge_issued', ['userid' => $userid]);
-}
-
-/**
- * Update api user key.
- *
- * @param object $infoapiuser
- * @return mixed
- */
-function local_ibob_update_api_key_user($infoapiuser) {
-    global $DB;
-    $ouserapikey = new stdClass();
-    $ouserapikey->id = $infoapiuser->id;
-    $ouserapikey->timemodified = time();
-    $ouserapikey->key_field = json_encode(['email' => $infoapiuser->confirmation_email_wanted]);
-    $ouserapikey->confirmation_needed = 0;
-    $ouserapikey->confirmation_code = '';
-    $ouserapikey->confirmation_expiration_date = null;
-    $ouserapikey->confirmation_email_wanted = '';
-    $apikeyuser = $DB->update_record('local_ibob_user_apikey', $ouserapikey);
-    return $apikeyuser;
-}
-
-/**
- * Get user info.
- *
- * @param int $code
- * @return mixed
- */
-function local_ibob_get_info_user(int $code) {
-    global $DB;
-    $sql = "SELECT *
-              FROM {local_ibob_user_apikey}
-             WHERE confirmation_code = :confirmation_code";
-    return $DB->get_record_sql($sql, ["confirmation_code" => $code]);
-}
-
-/**
- * Generate confirmation code.
- *
- * @return int
- */
-function local_ibob_generate_confirmation_code() {
-    return mt_rand(1000, 9999);
-}
+//
+///**
+// * Delete user badge.
+// *
+// * @param int $userid
+// * @return void
+// */
+//function delete_badges_user(int $userid) {
+//    global $DB;
+//    $DB->delete_records('local_ibob_badge_issued', ['userid' => $userid]);
+//}
+//
+///**
+// * Update api user key.
+// *
+// * @param object $infoapiuser
+// * @return mixed
+// */
+//function update_api_key_user($infoapiuser) {
+//    global $DB;
+//    $ouserapikey = new stdClass();
+//    $ouserapikey->id = $infoapiuser->id;
+//    $ouserapikey->timemodified = time();
+//    $ouserapikey->key_field = json_encode(['email' => $infoapiuser->confirmation_email_wanted]);
+//    $ouserapikey->confirmation_needed = 0;
+//    $ouserapikey->confirmation_code = '';
+//    $ouserapikey->confirmation_expiration_date = null;
+//    $ouserapikey->confirmation_email_wanted = '';
+//    $apikeyuser = $DB->update_record('local_ibob_user_apikey', $ouserapikey);
+//    return $apikeyuser;
+//}
+//
+///**
+// * Get user info.
+// *
+// * @param int $code
+// * @return mixed
+// */
+//function get_info_user(int $code) {
+//    global $DB;
+//    $sql = "SELECT *
+//              FROM {local_ibob_user_apikey}
+//             WHERE confirmation_code = :confirmation_code";
+//    return $DB->get_record_sql($sql, ["confirmation_code" => $code]);
+//}
+//
+///**
+// * Generate confirmation code.
+// *
+// * @return int
+// */
+//function generate_confirmation_code() {
+//    return mt_rand(1000, 9999);
+//}

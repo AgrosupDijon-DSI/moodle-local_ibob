@@ -255,3 +255,58 @@ function local_ibob_extend_settings_navigation(settings_navigation $navigation) 
         }
     }
 }
+
+
+/**
+ * Delete user badge.
+ *
+ * @param int $userid
+ * @return void
+ */
+function delete_badges_user(int $userid) {
+    global $DB;
+    $DB->delete_records('local_ibob_badge_issued', ['userid' => $userid]);
+}
+
+/**
+ * Update api user key.
+ *
+ * @param object $infoapiuser
+ * @return mixed
+ */
+function update_api_key_user($infoapiuser) {
+    global $DB;
+    $ouserapikey = new stdClass();
+    $ouserapikey->id = $infoapiuser->id;
+    $ouserapikey->timemodified = time();
+    $ouserapikey->key_field = json_encode(['email' => $infoapiuser->confirmation_email_wanted]);
+    $ouserapikey->confirmation_needed = 0;
+    $ouserapikey->confirmation_code = '';
+    $ouserapikey->confirmation_expiration_date = null;
+    $ouserapikey->confirmation_email_wanted = '';
+    $apikeyuser = $DB->update_record('local_ibob_user_apikey', $ouserapikey);
+    return $apikeyuser;
+}
+
+/**
+ * Get user info.
+ *
+ * @param int $code
+ * @return mixed
+ */
+function get_info_user(int $code) {
+    global $DB;
+    $sql = "SELECT *
+              FROM {local_ibob_user_apikey}
+             WHERE confirmation_code = :confirmation_code";
+    return $DB->get_record_sql($sql, ["confirmation_code" => $code]);
+}
+
+/**
+ * Generate confirmation code.
+ *
+ * @return int
+ */
+function generate_confirmation_code() {
+    return mt_rand(1000, 9999);
+}
