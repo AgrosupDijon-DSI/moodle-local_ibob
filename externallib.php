@@ -38,10 +38,10 @@ class local_ibob_external extends external_api {
      * Get badge infos.
      *
      * @param int $badgeid
-     * @return mixed
+     * @return array
      */
     public static function get_badge(int $badgeid) {
-        global $DB;
+        global $DB, $USER;
 
         $sql = "SELECT *,expirationdate as expirationformateddate
                   FROM {local_ibob_badges}
@@ -49,8 +49,8 @@ class local_ibob_external extends external_api {
                     ON {local_ibob_badges}.id = {local_ibob_badge_issued}.badgeid
                  WHERE {local_ibob_badges}.id = :id";
         $mybadge = $DB->get_record_sql($sql, ["id" => $badgeid]);
-        $mybadge->image = mb_substr($mybadge->image, 7);
-        return $mybadge;
+        $response = ['mybadge' => $mybadge];
+        return json_encode($response);
     }
 
     /**
@@ -60,29 +60,32 @@ class local_ibob_external extends external_api {
      * @return mixed
      */
     public static function detail_badge_function(int $badgeid) {
-        $params = self::validate_parameters(self::detail_badge_function_parameters(), ['badgeid' => $badgeid]);
+        self::validate_parameters(self::detail_badge_function_parameters(), ['badgeid' => $badgeid]);
         return self::get_badge($badgeid);
     }
 
     /**
      * Badge detail function return.
      *
-     * @return external_single_structure
+     * @return external_value
      */
     public static function detail_badge_function_returns() {
-        return new external_single_structure(
-            [
-                'id' => new external_value(PARAM_INT, 'badge id'),
-                'name' => new external_value(PARAM_TEXT, 'badge name'),
-                'description' => new external_value(PARAM_TEXT, 'badge description'),
-                'issuername' => new external_value(PARAM_TEXT, 'badge issuer name'),
-                'issuerurl' => new external_value(PARAM_TEXT, 'badge issuer url'),
-                'issuercontact' => new external_value(PARAM_TEXT, 'badge issuer contact'),
-                'group' => new external_value(PARAM_INT, 'badge group'),
-                'image' => new external_value(PARAM_TEXT, 'badge image url'),
-                'expirationformateddate' => new external_value(PARAM_TEXT, 'badge expiration date'),
-            ]
-        );
+        return new external_value(PARAM_RAW, 'Json returned');
+        //return new external_multiple_structure(
+        //    return new external_single_structure(
+        //    [
+        //        'id' => new external_value(PARAM_RAW, 'badge id'),
+        //        'name' => new external_value(PARAM_RAW, 'badge name'),
+        //        'description' => new external_value(PARAM_RAW, 'badge description'),
+        //        'issuername' => new external_value(PARAM_RAW, 'badge issuer name'),
+        //        'issuerurl' => new external_value(PARAM_RAW, 'badge issuer url'),
+        //        'issuercontact' => new external_value(PARAM_RAW, 'badge issuer contact'),
+        //        'group' => new external_value(PARAM_RAW, 'badge group'),
+        //        'image' => new external_value(PARAM_RAW, 'badge image url'),
+        //        'expirationformateddate' => new external_value(PARAM_RAW, 'badge expiration date'),
+        //    ]
+        //)
+        //);
     }
 
     /**

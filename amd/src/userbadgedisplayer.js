@@ -21,7 +21,7 @@ define([
                         args: {badgeid: elem.data("id")},}
                     ]);
                 promises[0].done(function(response) {
-                    returnfunc(response);
+                    returnfunc(JSON.parse(response));
                 });
                 /**
                  * Return function.
