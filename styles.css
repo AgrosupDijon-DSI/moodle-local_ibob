@@ -20,7 +20,7 @@
 .local-ibob .ibob-badge {
     text-align: center;
     float: left;
-    margin: 0px 15px 15px 0px;
+    margin: 0 15px 15px 0;
     width: 120px;
     background: #fff none repeat scroll 0 0;
     border: 1px solid #d2d2d2;
