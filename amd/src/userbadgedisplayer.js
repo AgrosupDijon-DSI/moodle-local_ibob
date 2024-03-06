@@ -29,7 +29,6 @@ const detailBadgeModal = (badgeid) => fetchMany([{
 }])[0];
 
 const displayBadgeDetails = (data) => {
-    // let modalTitle = 'Détail du badge';
     let modalTitle = getString('modalBadgeDetail', 'local_ibob');
     let trigger = $('#badge_' + data.id);
 
