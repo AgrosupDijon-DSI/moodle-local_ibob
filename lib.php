@@ -50,7 +50,7 @@ const BADGE_IMAGE_SIZE_NORMAL = 50;
  * @param int $userid
  * @return mixed
  */
-function get_user_providers(int $userid) {
+function local_ibob_get_user_providers(int $userid) {
     global $DB;
     $sql = "SELECT {local_ibob_providers}.apiurl,{local_ibob_user_apikey}.key_field
               FROM {local_ibob_user_apikey} JOIN {local_ibob_providers}
@@ -68,7 +68,7 @@ function get_user_providers(int $userid) {
  * @param string $email
  * @return array
  */
-function get_user_provider_json(string $url, string $email) {
+function local_ibob_get_user_provider_json(string $url, string $email) {
     $curl = new curl();
     $fullurl = $url . 'convert/email';
     $output = $curl->post($fullurl,
@@ -88,7 +88,7 @@ function get_user_provider_json(string $url, string $email) {
  * @param int $badgeid
  * @return mixed
  */
-function print_badge(string $imgsize, string $img, string $name, string $badgeuniqueid, int $badgeid) {
+function local_ibob_print_badge(string $imgsize, string $img, string $name, string $badgeuniqueid, int $badgeid) {
     $params = ["src" => $img, "alt" => $name, "width" => $imgsize];
     $badgeimage = html_writer::empty_tag("img", $params);
     $badgename = html_writer::tag('p', s($name), ['class' => 'badgename']);
@@ -117,14 +117,14 @@ function local_ibob_myprofile_navigation(\core_user\output\myprofile\tree $tree)
         $tree->add_category($category);
 
         // Open Badges list construction.
-        $ouserprovider = get_user_providers($userid);
+        $ouserprovider = local_ibob_get_user_providers($userid);
         $abadges = [];
 
         if ($ouserprovider) { // User has a provider.
             $url = $ouserprovider->apiurl;
             $oapikey = json_decode($ouserprovider->key_field);
             $email = $oapikey->email;
-            $curlresult = get_user_provider_json($url, $email);
+            $curlresult = local_ibob_get_user_provider_json($url, $email);
 
             if (is_null($curlresult['json']) && $curlresult['code'] != 200) {
                 throw new Exception(get_string('testbackpackapiurlexception', 'local_ibob',
@@ -216,7 +216,7 @@ function local_ibob_myprofile_navigation(\core_user\output\myprofile\tree $tree)
                 }
 
                 $badgeuniqueid = 'badge_' . $badgeid;
-                $content .= print_badge(
+                $content .= local_ibob_print_badge(
                     BADGE_IMAGE_SIZE_NORMAL,
                     $badge['image'],
                     $badge['name'],
@@ -263,7 +263,7 @@ function local_ibob_extend_settings_navigation(settings_navigation $navigation) 
  * @param int $userid
  * @return void
  */
-function delete_badges_user(int $userid) {
+function local_ibob_delete_badges_user(int $userid) {
     global $DB;
     $DB->delete_records('local_ibob_badge_issued', ['userid' => $userid]);
 }
@@ -274,7 +274,7 @@ function delete_badges_user(int $userid) {
  * @param object $infoapiuser
  * @return mixed
  */
-function update_api_key_user($infoapiuser) {
+function local_ibob_update_api_key_user($infoapiuser) {
     global $DB;
     $ouserapikey = new stdClass();
     $ouserapikey->id = $infoapiuser->id;
@@ -294,7 +294,7 @@ function update_api_key_user($infoapiuser) {
  * @param int $code
  * @return mixed
  */
-function get_info_user(int $code) {
+function local_ibob_get_info_user_by_code(int $code) {
     global $DB;
     $sql = "SELECT *
               FROM {local_ibob_user_apikey}
@@ -307,6 +307,132 @@ function get_info_user(int $code) {
  *
  * @return int
  */
-function generate_confirmation_code() {
+function local_ibob_generate_confirmation_code() {
     return mt_rand(1000, 9999);
+}
+
+/**
+ * Delete enrolments from user.
+ *
+ * @param int $userid
+ * @return void
+ */
+function local_ibob_delete_enrolments_user(int $userid) {
+    global $DB;
+    $sql = "
+        SELECT E.courseid
+          FROM {enrol} E
+          JOIN {user_enrolments} UE
+            ON E.id = UE.enrolid
+         WHERE E.enrol = 'ibobenrol'
+           AND UE.userid = :userid
+    ";
+    foreach ($DB->get_records_sql($sql, ["userid" => $userid]) as $oenrolment) {
+        // Disenrol the user.
+        $instances = $DB->get_records('enrol', ['courseid' => $oenrolment->courseid]);
+        foreach ($instances as $instance) {
+            $plugin = \enrol_get_plugin($instance->enrol);
+            $plugin->unenrol_user($instance, $userid);
+        }
+    }
+}
+
+
+/**
+ * Update confirmation sequence.
+ * @param int $userid
+ * @param int $apikeyid
+ * @param string $newemail
+ * @return mixed
+ */
+function local_ibob_update_confirmation_sequence_init(int $userid, int $apikeyid, string $newemail) {
+    global $DB;
+    $ouserapikey = new stdClass();
+    $ouserapikey->id = $apikeyid;
+    $ouserapikey->confirmation_needed = true;
+    $expirationdate = time() + 86400;
+    $ouserapikey->confirmation_code = local_ibob_generate_confirmation_code();
+    $ouserapikey->confirmation_expiration_date = $expirationdate;
+    $ouserapikey->confirmation_email_wanted  = $newemail;
+
+    local_ibob_send_email_confirmation($userid, $newemail, $ouserapikey);
+    $apikeyuser = $DB->update_record('local_ibob_user_apikey', $ouserapikey);
+    return $apikeyuser;
+}
+
+/**
+ * Send email confirmation to user.
+ * @param int $userid
+ * @param string $newemail
+ * @param object $ouserapikey
+ * @return void
+ */
+function local_ibob_send_email_confirmation(int $userid, string $newemail, $ouserapikey) {
+    global $CFG;
+    $adateexpiration = getdate($ouserapikey->confirmation_expiration_date);
+    $message = new \core\message\message();
+    $message->component = 'local_ibob';
+    $message->name = 'ibobemailchange';
+    $message->userto = \core_user::get_user($userid);
+    $message->userto->email = $newemail;
+    $message->userfrom = \core_user::get_noreply_user();
+    $message->subject = get_string('subjectconfirmchangeemail', 'local_ibob');
+    $smoodlelink = html_writer::link(
+            new moodle_url($CFG->wwwroot.'/local/ibob/emailconfirmation.php'),
+            get_string('messconfirmchangeemaillinktext', 'local_ibob')
+    );
+    $timeformatemail = $adateexpiration['hours']."h".$adateexpiration['minutes'];
+    $language = substr ($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+    switch ($language) {
+        case "fr" :
+            $dateformatemail = $adateexpiration['mday']."/".$adateexpiration['mon']."/".$adateexpiration['year'];
+        default :
+            $dateformatemail = $adateexpiration['mon']."-".$adateexpiration['mday']."-".$adateexpiration['year'];
+    }
+    $avarsemail = ['wwwroot' => $CFG->wwwroot, 'link' => $smoodlelink, 'code' => $ouserapikey->confirmation_code,
+            'date' => $dateformatemail, 'time' => $timeformatemail, ];
+    $message->fullmessage .= get_string('messconfirmchangeemail', 'local_ibob', $avarsemail);
+    $message->fullmessageformat = FORMAT_PLAIN;
+    $message->fullmessagehtml .= get_string('messconfirmchangeemailhtml', 'local_ibob', $avarsemail);
+
+    message_send($message);
+}
+
+/**
+ * Insert api key from user.
+ * @param int $userid
+ * @param string $email
+ * @return mixed
+ */
+function local_ibob_insert_api_key_user(int $userid, string $email) {
+    global $DB;
+    $ouserapikey = new stdClass();
+    // For now, provider = 1 because we only deal with OBP.
+    $ouserapikey->provider_id = 1;
+    $ouserapikey->timecreated = time();
+    $ouserapikey->key_field = json_encode(['email' => 'waiting@validation.com']);
+    $ouserapikey->confirmation_email_wanted = $email;
+    $ouserapikey->user_id = $userid;
+    $apikeyuser = $DB->insert_record('local_ibob_user_apikey', $ouserapikey);
+    return $apikeyuser;
+}
+
+/**
+ * Delete api key from user.
+ * @param int $apiuserkey
+ * @return void
+ */
+function local_ibob_delete_api_key_user(int $apiuserkey) {
+    global $DB;
+    $DB->delete_records('local_ibob_user_apikey', ['id' => $apiuserkey]);
+}
+
+/**
+ * Get user infos.
+ * @param int $userid
+ * @return mixed
+ */
+function local_ibob_get_info_user_by_id(int $userid) {
+    global $DB;
+    return $DB->get_record_select('local_ibob_user_apikey', 'user_id = :user_id', ['user_id' => $userid], '*', IGNORE_MISSING);
 }

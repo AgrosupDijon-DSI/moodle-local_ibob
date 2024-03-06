@@ -46,7 +46,7 @@ class update_users_badges extends \core\task\scheduled_task {
         global $DB, $CFG;
 
         // List of all users whith a provider and a key.
-        $alistuserwithissuedbadgeslocal = $this->get_users_obp();
+        $alistuserwithissuedbadgeslocal = $this->local_ibob_get_users_obp();
         foreach ($alistuserwithissuedbadgeslocal as $ouser) {
             // List of local open badges.
             $alistlocaluserwithissuedbadges = $this->get_local_badges_from_user($ouser->user_id);
@@ -57,7 +57,7 @@ class update_users_badges extends \core\task\scheduled_task {
             // List of online badges.
             $ousername = json_decode($ouser->key_field);
             $url = $provider[1]->apiurl;
-            $acurl = get_user_provider_json($url, $ousername->email);
+            $acurl = local_ibob_get_user_provider_json($url, $ousername->email);
 
             if (is_null($acurl['json']) && $acurl['code'] != 200) {
                 throw new \Exception(get_string('testbackpackapiurlexception', 'local_ibob',
@@ -402,7 +402,7 @@ class update_users_badges extends \core\task\scheduled_task {
      *
      * @return array
      */
-    protected function get_users_obp(): array {
+    protected function local_ibob_get_users_obp(): array {
         global $DB;
         $sql = "SELECT user_id,key_field
                   FROM {local_ibob_user_apikey}
