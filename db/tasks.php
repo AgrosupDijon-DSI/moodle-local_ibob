@@ -32,13 +32,4 @@ $tasks = [
         'dayofweek' => '*',
         'month' => '*',
     ],
-    [
-        'classname' => 'local_ibob\task\force_processing_task',
-        'blocking' => 0,
-        'minute' => '*/1',
-        'hour' => '*',
-        'day' => '*',
-        'dayofweek' => '*',
-        'month' => '*',
-    ],
 ];
