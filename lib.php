@@ -34,15 +34,15 @@
 /**
  * @var int tiny badge image.
  */
-const BADGE_IMAGE_SIZE_TINY = 22;
+const LOCAL_IBOB_BADGE_IMAGE_SIZE_TINY = 22;
 /**
  * @var int small badge image.
  */
-const BADGE_IMAGE_SIZE_SMALL = 32;
+const LOCAL_IBOB_BADGE_IMAGE_SIZE_SMALL = 32;
 /**
  * @var int normal badge image.
  */
-const BADGE_IMAGE_SIZE_NORMAL = 50;
+const LOCAL_IBOB_BADGE_IMAGE_SIZE_NORMAL = 50;
 
 /**
  * Get user provider.
@@ -217,7 +217,7 @@ function local_ibob_myprofile_navigation(\core_user\output\myprofile\tree $tree)
 
                 $badgeuniqueid = 'badge_' . $badgeid;
                 $content .= local_ibob_print_badge(
-                    BADGE_IMAGE_SIZE_NORMAL,
+                    LOCAL_IBOB_BADGE_IMAGE_SIZE_NORMAL,
                     $badge['image'],
                     $badge['name'],
                     $badgeuniqueid,
