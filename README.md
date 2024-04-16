@@ -12,6 +12,21 @@ Access to the course is thus open to users who hold one or more of these Open Ba
 
 The second plugin manages notifications and emails sent to users, as well as the retrieval of public Open Badges stored in users' Open Badge Passport accounts and the updating of profiles in the Moodle platform via scheduled tasks.
 
+## Functionning steps ##
+### First step ###
+The administrator must enable the new enrolment method (Open Badges Enrolment) in administration>Plugins>Manage enrol plugins
+### Second step ###
+The enrol method get all the open badges from Open Badge Passport, recorded in the platform.
+To make it work, at least 1 user must have configured their Open Badge Passport account in Moodle. 
+To configure their Open Badge Passport accounts : Preferences>Connect to your Open Badge Passport account (IBOB)>Manage your configuration
+Only the public open badges of the user Open Badge Passport will be retrieved.
+The more users who have configured their accounts, the more open badges will be available for use in the enrollment method.
+### Third step ###
+The teacher can now add the enrolment method to a course and select the open badges who will grant access to this course.
+When the teacher save the configuration of this course, emails and notification will be send to the users who can now enrol in the this course.
+
+
+
 ## License ##
 
 2024 Frédéric Grebot <frederic.grebot@agrosupdijon.fr>
