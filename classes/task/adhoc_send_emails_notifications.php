@@ -226,9 +226,8 @@ class adhoc_send_emails_notifications  extends \core\task\adhoc_task {
 
     /**
      * Get the users from the badge id.
-     *
      * @param string $ssearchbadges
-     * @param int $alreadyenrolled
+     * @param int|null $alreadyenrolled
      * @return mixed
      */
     protected function get_users_from_badges(string $ssearchbadges, ?int $alreadyenrolled = null) {
