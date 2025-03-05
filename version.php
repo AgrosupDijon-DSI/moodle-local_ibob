@@ -26,10 +26,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_ibob';
-$plugin->release = '1.0 (2023051845)';
-$plugin->version = 2023051846;
-$plugin->requires = 2019052002;
+$plugin->release = '2.0 (2023051900)';
+$plugin->version = 2023051900;
+$plugin->requires  = 2023102600;         // Requires this Moodle version (4.3).
 $plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = [
-    'enrol_ibobenrol' => 2023051800,
+    'enrol_ibobenrol' => 2023051900,
 ];

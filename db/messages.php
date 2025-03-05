@@ -29,14 +29,14 @@ $messageproviders = [
         'capability' => 'local/ibob:emailnotifyenrolibob',
         'defaults' => [
             'popup' => MESSAGE_FORCED,
-            'email' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDIN + MESSAGE_DEFAULT_LOGGEDOFF,
+            'email' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_ENABLED,
         ],
     ],
     'ibobemailchange' => [
         'capability' => 'local/ibob:ibobemailchange',
         'defaults' => [
             'popup' => MESSAGE_DISALLOWED,
-            'email' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDIN + MESSAGE_DEFAULT_LOGGEDOFF,
+            'email' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_ENABLED,
         ],
     ],
 ];
