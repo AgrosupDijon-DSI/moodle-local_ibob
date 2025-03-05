@@ -12,6 +12,17 @@ Access to the course is thus open to users who hold one or more of these Open Ba
 
 The second plugin manages notifications and emails sent to users, as well as the retrieval of public Open Badges stored in users' Open Badge Passport accounts and the updating of profiles in the Moodle platform via scheduled tasks.
 
+## Changelog history ##
+04/17/24  F. Grebot      version 1.0 released.
+
+04/23/24  F. Grebot      version 2.0 released.
+
+Implementation of a filter for the badges list, when you had the enrolment method.
+
+03/03/25 F. Grebot      version 3.0 released.
+
+New version for Moodle 4.5
+
 ## Functionning steps ##
 ### First step ###
 The administrator must enable the new enrolment method (Open Badges Enrolment) in administration>Plugins>Manage enrol plugins
@@ -25,11 +36,9 @@ The more users who have configured their accounts, the more open badges will be 
 The teacher can now add the enrolment method to a course and select the open badges who will grant access to this course.
 When the teacher save the configuration of this course, emails and notification will be send to the users who can now enrol in the this course.
 
-
-
 ## License ##
 
-2024 Frédéric Grebot <frederic.grebot@agrosupdijon.fr>
+2025 Frédéric Grebot <frederic.grebot@agrosupdijon.fr>
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
