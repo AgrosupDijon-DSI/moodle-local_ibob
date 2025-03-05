@@ -31,5 +31,5 @@ $plugin->version = 2025030500;
 $plugin->requires  = 2024100700;         // Requires this Moodle version (4.5).
 $plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = [
-    'enrol_ibobenrol' => 2023051900,
+    'enrol_ibobenrol' => 2025030500,
 ];
