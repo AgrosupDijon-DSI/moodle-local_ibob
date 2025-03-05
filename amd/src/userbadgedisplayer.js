@@ -32,7 +32,7 @@ const displayBadgeDetails = (data) => {
     let modalTitle = getString('modalBadgeDetail', 'local_ibob');
     let trigger = $('#badge_' + data.id);
 
-    Modal.create({
+    return Modal.create({
         title: modalTitle,
         body: templates.render('local_ibob/userbadgedisplayer', data),
     }, trigger).then(function(modal) {

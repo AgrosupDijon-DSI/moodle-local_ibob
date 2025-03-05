@@ -231,7 +231,7 @@ class adhoc_send_emails_notifications  extends \core\task\adhoc_task {
      * @param int $alreadyenrolled
      * @return mixed
      */
-    protected function get_users_from_badges(string $ssearchbadges, int $alreadyenrolled = null) {
+    protected function get_users_from_badges(string $ssearchbadges, ?int $alreadyenrolled = null) {
         global $DB;
         $sql = "SELECT userid as id
                   FROM {local_ibob_badge_issued}
