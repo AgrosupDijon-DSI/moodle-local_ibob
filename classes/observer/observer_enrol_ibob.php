@@ -16,7 +16,6 @@
 
 namespace local_ibob\observer;
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir . "/adminlib.php");
 
 use local_ibob\task\adhoc_send_emails_notifications;
 

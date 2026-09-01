@@ -24,7 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir."/externallib.php");
+use core_external\external_function_parameters;
+use core_external\external_value;
 
 /**
  * External lib for ibob.
@@ -33,7 +34,7 @@ require_once($CFG->libdir."/externallib.php");
  * @copyright  2023, frederic.grebot <frederic.grebot@agrosupdijon.fr>, L'Institut Agro Dijon, DSI, CNERTA-WEB
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class local_ibob_external extends external_api {
+class local_ibob_external extends \core_external\external_api {
     /**
      * Get badge infos.
      *

@@ -69,8 +69,8 @@ class adhoc_send_emails_notifications  extends \core\task\adhoc_task {
                       FROM {user_enrolments} ue
                       JOIN {user} u
                         ON ue.userid = u.id
-                     WHERE ue.enrolid = ".$oenrol->id;
-            foreach ($DB->get_records_sql($sql) as $userid => $ousertemp) {
+                     WHERE ue.enrolid = :enrolid";
+            foreach ($DB->get_records_sql($sql, ['enrolid' => $oenrol->id]) as $userid => $ousertemp) {
                 $abadgesuser = $this->get_badges_from_user($userid);
                 $hasbadge = false;
                 foreach ($abadgesuser as $obadge) {
@@ -236,7 +236,6 @@ class adhoc_send_emails_notifications  extends \core\task\adhoc_task {
                   FROM {local_ibob_badge_issued}
                  WHERE badgeid in (:badgelist)
               GROUP BY id";
-        mtrace('requete get_users_from_badges = '.$sql);
         return $DB->get_records_sql($sql, ["badgelist" => $ssearchbadges]);
     }
 

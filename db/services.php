@@ -25,9 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 $functions = [
     'local_ibob_detail_badge_function' => [
-        'classname' => 'local_ibob_external',
+        'classname' => 'local_ibob\external\service_detail_badge',
         'methodname' => 'detail_badge_function',
-        'classpath' => 'local/ibob/externallib.php',
         'description' => 'Print badge detail',
         'type' => 'read',
         'ajax' => true,

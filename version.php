@@ -19,17 +19,14 @@
  *
  * @package     local_ibob
  * @category    string
- * @copyright  2023, frederic.grebot <frederic.grebot@agrosupdijon.fr>, L'Institut Agro Dijon, DSI, CNERTA-WEB
+ * @copyright  2023, frederic.grebot <frederic.grebot@agrosupdijon.fr>, L'Institut Agro Dijon, Eduter, CNERTA-WEB
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_ibob';
-$plugin->release = '3.0 (2025030500)';
-$plugin->version = 2025030500;
-$plugin->requires  = 2024100700;         // Requires this Moodle version (4.5).
+$plugin->release = '4.0 (2026090100)';
+$plugin->version = 2026090100;
+$plugin->requires  = 2026052500;         // Requires this Moodle version (5.2).
 $plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = [
-    'enrol_ibobenrol' => 2025030500,
-];

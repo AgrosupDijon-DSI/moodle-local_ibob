@@ -27,7 +27,9 @@ namespace local_ibob\external;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . "/externallib.php");
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_value;
 
 /**
  * PLUGIN local_ibob
@@ -43,31 +45,34 @@ class service_detail_badge extends external_api {
      * Returns description of method parameters
      * @return external_function_parameters
      */
-    public static function ibob_detail_badge_webservice_parameters() {
-        // FUNCTIONNAME_parameters() always return an external_function_parameters().
-        // The external_function_parameters constructor expects an array of external_description.
+    public static function detail_badge_function_parameters(): external_function_parameters {
         return new external_function_parameters(
-            ['badgeid' => new external_value(PARAM_INT, 'the badge id')]
+            ['badgeid' => new external_value(PARAM_INT, 'badge id', VALUE_REQUIRED)]
         );
     }
 
     /**
-     * The function itself
+     * Get badge details.
      * @param int $badgeid
      * @return string
      */
-    public static function ibob_detail_badge_webservice(int $badgeid): void {
-
-        // Parameters validation.
-        $params = self::validate_parameters(self::ibob_detail_badge_webservice_parameters(),
-            ['badgeid' => $badgeid]);
+    public static function detail_badge_function(int $badgeid): string {
+        global $DB;
+        self::validate_parameters(self::detail_badge_function_parameters(), ['badgeid' => $badgeid]);
+        $sql = "SELECT *, expirationdate as expirationformateddate
+                  FROM {local_ibob_badges}
+             LEFT JOIN {local_ibob_badge_issued}
+                    ON {local_ibob_badges}.id = {local_ibob_badge_issued}.badgeid
+                 WHERE {local_ibob_badges}.id = :id";
+        $mybadge = $DB->get_record_sql($sql, ['id' => $badgeid]);
+        return json_encode(['mybadge' => $mybadge]);
     }
 
     /**
      * Returns description of method result value
-     * @return external_description
+     * @return external_value
      */
-    public static function ibob_detail_badge_webservice_returns() {
-        return new external_value(PARAM_RAW, 'the badge description');
+    public static function detail_badge_function_returns(): external_value {
+        return new external_value(PARAM_RAW, 'Json returned');
     }
 }

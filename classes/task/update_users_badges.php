@@ -18,7 +18,6 @@ namespace local_ibob\task;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__ . '/../../lib.php');
-require_once(__DIR__ . '/../../../../lib/filelib.php');
 
 /**
  * Plugin local_ibob.
@@ -77,7 +76,7 @@ class update_users_badges extends \core\task\scheduled_task {
                     foreach ($ajson as $backpackitem) {
                         foreach ($agroupid as $groupid) {
                             $fullurl = $url . $backpackitem . '/group/' . $groupid . '.json';
-                            $output = $acurl['curl']->get($fullurl);
+                            $output = local_ibob_http_get($fullurl);
                             $alistbadgesuser = json_decode($output, true);
                             // Fomating results for further comparaison.
                             if (count($alistbadgesuser) > 2) {

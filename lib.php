@@ -68,14 +68,34 @@ function local_ibob_get_user_providers(int $userid) {
  * @param string $email
  * @return array
  */
-function local_ibob_get_user_provider_json(string $url, string $email) {
-    $curl = new curl();
+function local_ibob_get_user_provider_json(string $url, string $email): array {
     $fullurl = $url . 'convert/email';
-    $output = $curl->post($fullurl,
-        ['email' => $email]);
-    $json = json_decode($output);
-    $code = $curl->info['http_code'];
-    return ['json' => $json, 'code' => $code, 'fullurl' => $fullurl, 'curl' => $curl];
+    $client = new \core\http_client();
+    try {
+        $response = $client->post($fullurl, ['form_params' => ['email' => $email]]);
+        $code = $response->getStatusCode();
+        $json = json_decode($response->getBody()->getContents());
+    } catch (\GuzzleHttp\Exception\RequestException $e) {
+        $code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 0;
+        $json = null;
+    }
+    return ['json' => $json, 'code' => $code, 'fullurl' => $fullurl];
+}
+
+/**
+ * Perform a GET request and return the response body.
+ *
+ * @param string $url
+ * @return string|null
+ */
+function local_ibob_http_get(string $url): ?string {
+    $client = new \core\http_client();
+    try {
+        $response = $client->get($url);
+        return $response->getBody()->getContents();
+    } catch (\GuzzleHttp\Exception\RequestException $e) {
+        return null;
+    }
 }
 
 /**
@@ -142,7 +162,7 @@ function local_ibob_myprofile_navigation(\core_user\output\myprofile\tree $tree)
                     foreach ($ajson as $backpackitem) {
                         foreach ($agroupid as $groupid) {
                             $fullurl = $url . $backpackitem . '/group/' . $groupid . '.json';
-                            $output = $curlresult['curl']->get($fullurl);
+                            $output = local_ibob_http_get($fullurl);
                             $alistbadgesuser = json_decode($output, true);
                             // Badge suppression if expiration date > now.
                             if (count($alistbadgesuser) > 2) {
@@ -240,7 +260,8 @@ function local_ibob_myprofile_navigation(\core_user\output\myprofile\tree $tree)
  * @param settings_navigation $navigation
  */
 function local_ibob_extend_settings_navigation(settings_navigation $navigation) {
-    if (dirname($_SERVER['PHP_SELF']).'/'.basename($_SERVER['PHP_SELF']) == '/user/preferences.php') {
+    global $PAGE;
+    if ($PAGE->url->compare(new moodle_url('/user/preferences.php'), URL_MATCH_BASE)) {
         if (isloggedin() && !isguestuser()) {
             $branch = $navigation->find('usercurrentsettings', navigation_node::TYPE_CONTAINER);
             $ibobprefs = $branch->add(
@@ -382,7 +403,7 @@ function local_ibob_send_email_confirmation(int $userid, string $newemail, $ouse
             get_string('messconfirmchangeemaillinktext', 'local_ibob')
     );
     $timeformatemail = $adateexpiration['hours']."h".$adateexpiration['minutes'];
-    $language = substr ($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+    $language = substr(current_language(), 0, 2);
     switch ($language) {
         case "fr" :
             $dateformatemail = $adateexpiration['mday']."/".$adateexpiration['mon']."/".$adateexpiration['year'];
